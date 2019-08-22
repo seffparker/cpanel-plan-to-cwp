@@ -17,4 +17,6 @@ the correspoding SQL querey will be:
 
 >`INSERT packages VALUES ('3', 'besthost_kinder_10GB', '500', '300', '0', '10', '0', '2', '0', '0', '0', '', 'besthost', '');`
  
- The script can import package file name that contain white-space too.
+The script can import package file name that contain white-space too.
+
+The packages are stored in cPanel server at /var/cpanel/packages. You can copy required package files to the CWP server.
