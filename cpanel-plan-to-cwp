@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Shell script to import cPanel hosting packages to CentOS Web Panel
+# Author: Seff Parker
+# Version: 20190822
+
+DB_NAME=root_cwp
+TABLE=packages
+id=2 # Last id of existing package
+IFS=$'\n'
+
+for PACKAGE_FILE in $*
+	do
+	echo "[INFO] Processing: $PACKAGE_FILE"
+	PACKAGE_DATA=$(sed 's/=/ /g' $PACKAGE_FILE | sed 's/ unlimited$/ 999/g')
+	[ "$PACKAGE_DATA" ] || continue
+	let id=($id + 1)
+	package_name=$(basename $PACKAGE_FILE)
+	disk_quota=$(echo "$PACKAGE_DATA" | awk '/^QUOTA/ {print $2}')
+	bandwidth=$(echo "$PACKAGE_DATA" | awk '/^BWLIMIT/ {print $2}')
+	ftp_accounts=$(echo "$PACKAGE_DATA" | awk '/^MAXFTP/ {print $2}')
+	email_accounts=$(echo "$PACKAGE_DATA" | awk '/^MAXPOP/ {print $2}')
+	email_lists=$(echo "$PACKAGE_DATA" | awk '/^MAXLST/ {print $2}')
+	databases=$(echo "$PACKAGE_DATA" | awk '/^MAXSQL/ {print $2}')
+	sub_domains=$(echo "$PACKAGE_DATA" | awk '/^MAXSUB/ {print $2}')
+	parked_domains=$(echo "$PACKAGE_DATA" | awk '/^MAXPARK/ {print $2}')
+	addons_domains=$(echo "$PACKAGE_DATA" | awk '/^MAXADDON/ {print $2}')
+	hourly_emails=$(echo "$PACKAGE_DATA" | awk '/^MAX_EMAIL_PER_HOUR/ {print $2}')
+	reseller=$(echo $package_name | cut -d'_' -f1)
+	echo "[INFO] Importing: $PACKAGE_FILE"
+	SQL="INSERT $TABLE VALUES ('$id', '$package_name', '$disk_quota', '$bandwidth', '$ftp_accounts', '$email_accounts', '$email_lists', '$databases', '$sub_domains', '$parked_domains', '$addons_domains', '$hourly_emails', '$reseller', '');"
+	# echo $SQL
+	mysql $DB_NAME -e "$SQL"
+done
