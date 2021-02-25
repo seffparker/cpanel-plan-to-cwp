@@ -3,7 +3,7 @@ Import hosting plan from cPanel into CentOS Web Panel
 
 This BASH script will read package values stored in file and import them to CWP database table.
 
-DEPRECATED: CentOS Web Panel has now implemented a built-in feature to import cPanel Packages while migrating accounts. 
+**DEPRECATED: CentOS Web Panel has now implemented a built-in feature to import cPanel Packages while migrating accounts.**
 
 ## Usage
 
